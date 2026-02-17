@@ -5,6 +5,8 @@ import UniformTypeIdentifiers
 struct SetupView: View {
     @ObservedObject var vm: PresentationViewModel
 
+//    @State private var pdfURL: URL?
+//    @State private var videoURL: URL?
     @State private var pdfURL: URL? = URL(fileURLWithPath: "/Users/lupin/work/mudassir/s26/slides/main.pdf")
     @State private var videoURL: URL? = URL(fileURLWithPath: "/Users/lupin/work/mudassir/s26/slides/qsort.mp4")
     @State private var videoAfterPage: Int = 5
