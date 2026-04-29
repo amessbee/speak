@@ -6,6 +6,7 @@ import SwiftUI
 struct SlideStageView: View {
     @ObservedObject var vm: PresentationViewModel
     @FocusState private var isFocused: Bool
+    @State private var keyMonitor: Any?
 
     var body: some View {
         ZStack {
@@ -47,20 +48,29 @@ struct SlideStageView: View {
         .onAppear {
             isFocused = true
             vm.triggerControlsVisibility()
+            // Use a window-level monitor so arrow keys work even when HUD buttons steal focus
+            keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+                switch event.keyCode {
+                case 123, 126: // left arrow, up arrow
+                    vm.previous()
+                    return nil
+                case 124, 125: // right arrow, down arrow
+                    vm.next()
+                    return nil
+                default:
+                    return event
+                }
+            }
+        }
+        .onDisappear {
+            if let monitor = keyMonitor {
+                NSEvent.removeMonitor(monitor)
+                keyMonitor = nil
+            }
         }
         .onTapGesture {
             isFocused = true
             vm.triggerControlsVisibility()
-        }
-        .onMoveCommand { direction in
-            switch direction {
-            case .right, .down:
-                vm.next()
-            case .left, .up:
-                vm.previous()
-            @unknown default:
-                break
-            }
         }
         .onKeyPress(.space) {
             vm.next()
