@@ -9,8 +9,11 @@ final class PresentationViewModel: ObservableObject {
     @Published var currentIndex: Int = 0
     @Published var isLoaded: Bool = false
     @Published var showControls: Bool = true
-    @Published var pendingDecision: Decision? = nil
     @Published var loadError: String? = nil
+    @Published var videoRestartToken: UUID = UUID()
+
+    // Non-nil while a detour (if-branch media) is playing.
+    @Published private(set) var detourSlide: Slide? = nil
 
     // MARK: - Private
 
@@ -18,21 +21,23 @@ final class PresentationViewModel: ObservableObject {
     private var executor: PlanExecutor?
     private var controlsHideTask: Task<Void, Never>?
 
+    // Detour queue: items queued by a "playDetour" hotkey action.
+    private var detourQueue: [ExecutableItem] = []
+    private var detourReturnIndex: Int = 0
+
     // MARK: - Computed
 
     var currentSlide: Slide? {
-        guard let exec = executor else { return nil }
-        return contentSlide(at: currentIndex, in: exec.items)
+        if let detour = detourSlide { return detour }
+        guard let exec = executor, exec.items.indices.contains(currentIndex) else { return nil }
+        return slide(from: exec.items[currentIndex])
     }
 
-    var totalSlides: Int {
-        guard let exec = executor else { return 0 }
-        return exec.items.filter { if case .decision = $0 { return false }; return true }.count
-    }
+    var totalSlides: Int { executor?.items.count ?? 0 }
 
     var progress: Double {
         guard totalSlides > 0 else { return 0 }
-        return Double(contentPosition + 1) / Double(totalSlides)
+        return Double(currentIndex + 1) / Double(totalSlides)
     }
 
     var isVideoSlide: Bool {
@@ -40,18 +45,22 @@ final class PresentationViewModel: ObservableObject {
         return false
     }
 
-    var hasPendingDecision: Bool { pendingDecision != nil }
+    var currentHotkeys: [CompiledHotkey] {
+        guard detourSlide == nil, let exec = executor else { return [] }
+        return exec.hotkeys(at: currentIndex)
+    }
 
-    // MARK: - Load
+    // MARK: - Load / Unload
 
     func load(plan: Plan) {
         self.plan = plan
         loadError = nil
+        detourSlide = nil
+        detourQueue = []
         do {
             let exec = try PlanExecutor(plan: plan)
             self.executor = exec
-            currentIndex = firstContentIndex(in: exec.items)
-            checkForDecisionAhead()
+            currentIndex = 0
             isLoaded = true
         } catch {
             loadError = error.localizedDescription
@@ -63,86 +72,51 @@ final class PresentationViewModel: ObservableObject {
         executor = nil
         isLoaded = false
         currentIndex = 0
-        pendingDecision = nil
+        detourSlide = nil
+        detourQueue = []
         loadError = nil
     }
 
     // MARK: - Navigation
 
     func next() {
-        guard let exec = executor else { return }
-
-        // If there is a pending decision, take the else branch
-        if let decision = pendingDecision {
-            pendingDecision = nil
-            applyJump(decision.elseJumpOffset, in: exec.items)
-            checkForDecisionAhead()
-            return
-        }
-
-        let items = exec.items
-        // Peek ahead past decision nodes
-        var peekIndex = currentIndex + 1
-        while peekIndex < items.count, case .decision(let d) = items[peekIndex] {
-            pendingDecision = d
-            peekIndex += 1
-            break
-        }
-
-        if pendingDecision != nil { return } // stay on current slide, showing the decision prompt
-
-        let nextContent = nextContentIndex(after: currentIndex, in: items)
-        if let idx = nextContent {
-            currentIndex = idx
-            checkForDecisionAhead()
+        guard detourSlide == nil, let exec = executor else { return }
+        if currentIndex < exec.items.count - 1 {
+            currentIndex += 1
         }
     }
 
     func previous() {
-        guard let exec = executor else { return }
-        pendingDecision = nil
-        let prevContent = prevContentIndex(before: currentIndex, in: exec.items)
-        if let idx = prevContent { currentIndex = idx }
+        guard detourSlide == nil else { return }
+        if currentIndex > 0 { currentIndex -= 1 }
     }
 
-    func goTo(contentPosition pos: Int) {
-        guard let exec = executor else { return }
-        pendingDecision = nil
-        let idx = rawIndex(forContentPosition: pos, in: exec.items)
-        if let idx { currentIndex = idx }
-    }
-
-    // MARK: - Trigger Key (conditional if-branch)
+    // MARK: - Hotkey dispatch
 
     func fireTriggerKey(_ key: Character) {
-        guard let decision = pendingDecision, decision.triggerKey == key else { return }
         guard let exec = executor else { return }
-        pendingDecision = nil
+        guard let hotkey = exec.hotkeys(at: currentIndex).first(where: { $0.key == key }) else { return }
 
-        if decision.ifInserts.isEmpty {
-            // advance or jump — handled by elseJumpOffset on if-branch side
-            // For advance: insert nothing, move to next content
-            let nextContent = nextContentIndex(after: currentIndex, in: exec.items)
-            if let idx = nextContent { currentIndex = idx }
-        } else {
-            // Insert the media items temporarily before the next item
-            // We do this by injecting into a transient queue
-            insertQueue.append(contentsOf: decision.ifInserts)
-            advanceIntoQueue()
+        switch hotkey.action {
+        case .jumpToIndex(let idx):
+            currentIndex = max(0, min(idx, exec.items.count - 1))
+
+        case .restartCurrent:
+            videoRestartToken = UUID()
+
+        case .playDetour(let items):
+            detourQueue = items
+            detourReturnIndex = min(currentIndex + 1, exec.items.count - 1)
+            advanceDetour()
         }
-        checkForDecisionAhead()
     }
 
-    // MARK: - Inserted Queue (for if-branch media)
-
-    private var insertQueue: [ExecutableItem] = []
-    private var inInsertQueue = false
+    // MARK: - Video callbacks
 
     func onVideoFinished() {
-        if inInsertQueue && !insertQueue.isEmpty {
-            advanceIntoQueue()
+        if detourSlide != nil {
+            advanceDetour()
         } else {
-            inInsertQueue = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                 self?.next()
             }
@@ -162,115 +136,22 @@ final class PresentationViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Private helpers
+    // MARK: - Private
 
-    private func advanceIntoQueue() {
-        guard !insertQueue.isEmpty else {
-            inInsertQueue = false
-            let nextContent = nextContentIndex(after: currentIndex, in: executor?.items ?? [])
-            if let idx = nextContent { currentIndex = idx }
+    private func advanceDetour() {
+        guard !detourQueue.isEmpty else {
+            detourSlide = nil
             return
         }
-        inInsertQueue = true
-        let item = insertQueue.removeFirst()
-        switch item {
-        case .pdfPage, .video, .image:
-            // Temporarily stash item and navigate to it by abusing currentSlide
-            // Use queuedSlide override
-            queuedSlide = slideFrom(item: item)
-        case .decision:
-            advanceIntoQueue() // skip decisions in queue
-        }
+        let item = detourQueue.removeFirst()
+        detourSlide = slide(from: item)
     }
 
-    // Override currentSlide during queue playback
-    @Published var queuedSlide: Slide? = nil
-
-    private func slideFrom(item: ExecutableItem) -> Slide? {
+    private func slide(from item: ExecutableItem) -> Slide? {
         switch item {
         case .pdfPage(let p): return .pdfPage(p)
         case .video(let u):   return .video(u)
         case .image(let u):   return .image(u)
-        case .decision:       return nil
         }
-    }
-
-    private func checkForDecisionAhead() {
-        guard let exec = executor else { return }
-        let nextIdx = currentIndex + 1
-        guard nextIdx < exec.items.count else { return }
-        if case .decision(let d) = exec.items[nextIdx] {
-            pendingDecision = d
-        } else {
-            pendingDecision = nil
-        }
-    }
-
-    private func applyJump(_ offset: Int, in items: [ExecutableItem]) {
-        let pos = contentPosition + offset - 1
-        let clamped = max(0, min(pos, totalSlides - 1))
-        if let idx = rawIndex(forContentPosition: clamped, in: items) {
-            currentIndex = idx
-        }
-    }
-
-    private var contentPosition: Int {
-        guard let exec = executor else { return 0 }
-        return contentSlideCount(upTo: currentIndex, in: exec.items)
-    }
-
-    private func contentSlide(at rawIndex: Int, in items: [ExecutableItem]) -> Slide? {
-        guard rawIndex < items.count else { return nil }
-        switch items[rawIndex] {
-        case .pdfPage(let p): return .pdfPage(p)
-        case .video(let u):   return .video(u)
-        case .image(let u):   return .image(u)
-        case .decision:       return nil
-        }
-    }
-
-    private func firstContentIndex(in items: [ExecutableItem]) -> Int {
-        for (i, item) in items.enumerated() {
-            if case .decision = item { continue }
-            return i
-        }
-        return 0
-    }
-
-    private func nextContentIndex(after index: Int, in items: [ExecutableItem]) -> Int? {
-        var i = index + 1
-        while i < items.count {
-            if case .decision = items[i] { i += 1; continue }
-            return i
-        }
-        return nil
-    }
-
-    private func prevContentIndex(before index: Int, in items: [ExecutableItem]) -> Int? {
-        var i = index - 1
-        while i >= 0 {
-            if case .decision = items[i] { i -= 1; continue }
-            return i
-        }
-        return nil
-    }
-
-    private func contentSlideCount(upTo index: Int, in items: [ExecutableItem]) -> Int {
-        var count = 0
-        for i in 0..<min(index, items.count) {
-            if case .decision = items[i] { continue }
-            count += 1
-        }
-        return count
-    }
-
-    private func rawIndex(forContentPosition pos: Int, in items: [ExecutableItem]) -> Int? {
-        var count = 0
-        for (i, item) in items.enumerated() {
-            if case .decision = item { continue }
-            if count == pos { return i }
-            count += 1
-        }
-        return nil
     }
 }

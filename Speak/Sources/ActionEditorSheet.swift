@@ -2,50 +2,31 @@ import SwiftUI
 
 struct ActionEditorSheet: View {
     let plan: Plan
-    let onCommit: (PlanAction) -> Void
     let editing: PlanAction?
+    let onCommit: (PlanAction) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
-    // Action type picker
     @State private var selectedType: ActionType = .pdfSlides
-
-    // PDF Slides fields
     @State private var pdfAlias: String = ""
     @State private var rangeType: RangePickerType = .all
     @State private var rangeN: String = ""
     @State private var rangeFrom: String = ""
     @State private var rangeTo: String = ""
-
-    // Video / Image fields
     @State private var mediaAlias: String = ""
-
-    // Conditional fields
-    @State private var triggerKey: String = ""
-    @State private var ifBranchType: BranchPickerType = .advance
-    @State private var ifJumpOffset: String = ""
-    @State private var ifPlayAlias: String = ""
-    @State private var elseBranchType: BranchPickerType = .advance
-    @State private var elseJumpOffset: String = ""
+    @State private var hotkeys: [HotkeyBehavior] = []
 
     enum ActionType: String, CaseIterable {
         case pdfSlides = "PDF Slides"
-        case video = "Video"
-        case image = "Image"
-        case conditional = "Conditional"
+        case video     = "Video"
+        case image     = "Image"
     }
 
     enum RangePickerType: String, CaseIterable {
-        case all = "All pages"
-        case first = "First N pages"
+        case all    = "All pages"
+        case first  = "First N pages"
         case suffix = "From page N"
-        case range = "Page range"
-    }
-
-    enum BranchPickerType: String, CaseIterable {
-        case advance = "Advance"
-        case jumpBy = "Jump by N"
-        case playThenAdvance = "Play media then advance"
+        case range  = "Page range"
     }
 
     init(plan: Plan, editing: PlanAction? = nil, onCommit: @escaping (PlanAction) -> Void) {
@@ -56,13 +37,13 @@ struct ActionEditorSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Sheet header
+            // Header
             HStack {
                 Text(editing == nil ? "Add Action" : "Edit Action")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                 Spacer()
-                Button(action: { dismiss() }) {
+                Button { dismiss() } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 18))
                         .foregroundStyle(.white.opacity(0.4))
@@ -78,19 +59,17 @@ struct ActionEditorSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
 
-                    // Action type (only show when adding new)
+                    // Action type (only when adding new)
                     if editing == nil {
                         FormSection("Action Type") {
                             Picker("Type", selection: $selectedType) {
-                                ForEach(ActionType.allCases, id: \.self) {
-                                    Text($0.rawValue).tag($0)
-                                }
+                                ForEach(ActionType.allCases, id: \.self) { Text($0.rawValue).tag($0) }
                             }
                             .pickerStyle(.segmented)
                         }
                     }
 
-                    // Type-specific fields
+                    // Type-specific source/range fields
                     switch selectedType {
                     case .pdfSlides:
                         FormSection("PDF Source") {
@@ -98,12 +77,9 @@ struct ActionEditorSheet: View {
                         }
                         FormSection("Page Range") {
                             Picker("Range", selection: $rangeType) {
-                                ForEach(RangePickerType.allCases, id: \.self) {
-                                    Text($0.rawValue).tag($0)
-                                }
+                                ForEach(RangePickerType.allCases, id: \.self) { Text($0.rawValue).tag($0) }
                             }
                             .pickerStyle(.menu)
-
                             switch rangeType {
                             case .all: EmptyView()
                             case .first:
@@ -128,38 +104,20 @@ struct ActionEditorSheet: View {
                         FormSection("Image Source") {
                             aliasPickerFor(kind: .image, selection: $mediaAlias)
                         }
-
-                    case .conditional:
-                        FormSection("Trigger Key") {
-                            FormTextField("Key (single character)", text: $triggerKey, placeholder: "e.g. b")
-                                .onChange(of: triggerKey) { _, val in
-                                    if val.count > 1 { triggerKey = String(val.suffix(1)) }
-                                }
-                        }
-                        FormSection("If branch (key pressed)") {
-                            branchEditor(typeBinding: $ifBranchType, jumpBinding: $ifJumpOffset, playBinding: $ifPlayAlias)
-                        }
-                        FormSection("Else branch (key not pressed)") {
-                            branchEditor(typeBinding: $elseBranchType, jumpBinding: $elseJumpOffset, playBinding: .constant(""))
-                                .disabled(true) // else branch can only be advance/jump, not playMedia
-                            // Re-enable just the relevant pickers
-                            Picker("Else", selection: $elseBranchType) {
-                                Text(BranchPickerType.advance.rawValue).tag(BranchPickerType.advance)
-                                Text(BranchPickerType.jumpBy.rawValue).tag(BranchPickerType.jumpBy)
-                            }
-                            .pickerStyle(.segmented)
-                            if elseBranchType == .jumpBy {
-                                FormTextField("Jump offset (can be negative)", text: $elseJumpOffset, placeholder: "e.g. -2 or 3")
-                            }
-                        }
                     }
+
+                    // Hotkeys section
+                    HotkeyEditorSection(
+                        hotkeys: $hotkeys,
+                        actionKind: selectedType,
+                        plan: plan
+                    )
                 }
                 .padding(24)
             }
 
             Divider().background(Color.white.opacity(0.08))
 
-            // Footer
             HStack {
                 Spacer()
                 Button("Cancel") { dismiss() }
@@ -171,13 +129,13 @@ struct ActionEditorSheet: View {
             .padding(.horizontal, 24)
             .padding(.vertical, 16)
         }
-        .frame(width: 480)
+        .frame(width: 520)
         .background(Color(hex: "#13131a"))
         .preferredColorScheme(.dark)
         .onAppear { populateFromEditing() }
     }
 
-    // MARK: - Subviews
+    // MARK: - Helpers
 
     @ViewBuilder
     private func aliasPickerFor(kind: SourceKind, selection: Binding<String>) -> some View {
@@ -190,8 +148,7 @@ struct ActionEditorSheet: View {
             Picker("Source", selection: selection) {
                 Text("Select…").tag("")
                 ForEach(sources) { src in
-                    Text("\(src.alias) — \(URL(fileURLWithPath: src.path).lastPathComponent)")
-                        .tag(src.alias)
+                    Text("\(src.alias) — \(URL(fileURLWithPath: src.path).lastPathComponent)").tag(src.alias)
                 }
             }
             .pickerStyle(.menu)
@@ -203,39 +160,12 @@ struct ActionEditorSheet: View {
         }
     }
 
-    @ViewBuilder
-    private func branchEditor(
-        typeBinding: Binding<BranchPickerType>,
-        jumpBinding: Binding<String>,
-        playBinding: Binding<String>
-    ) -> some View {
-        Picker("Branch", selection: typeBinding) {
-            ForEach(BranchPickerType.allCases, id: \.self) {
-                Text($0.rawValue).tag($0)
-            }
-        }
-        .pickerStyle(.segmented)
-
-        switch typeBinding.wrappedValue {
-        case .advance: EmptyView()
-        case .jumpBy:
-            FormTextField("Jump offset", text: jumpBinding, placeholder: "e.g. 2 or -1")
-        case .playThenAdvance:
-            aliasPickerFor(kind: .video, selection: playBinding)
-        }
-    }
-
-    // MARK: - Validation
-
     var canCommit: Bool {
         switch selectedType {
-        case .pdfSlides:   return !pdfAlias.isEmpty
-        case .video, .image: return !mediaAlias.isEmpty
-        case .conditional: return triggerKey.count == 1
+        case .pdfSlides:       return !pdfAlias.isEmpty
+        case .video, .image:   return !mediaAlias.isEmpty
         }
     }
-
-    // MARK: - Commit
 
     private func commit() {
         guard let action = buildAction() else { return }
@@ -246,24 +176,11 @@ struct ActionEditorSheet: View {
     private func buildAction() -> PlanAction? {
         switch selectedType {
         case .pdfSlides:
-            let range = buildRange()
-            return .pdfSlides(PDFSlidesAction(sourceAlias: pdfAlias, range: range))
-
+            return .pdfSlides(PDFSlidesAction(sourceAlias: pdfAlias, range: buildRange(), hotkeys: hotkeys))
         case .video:
-            return .video(SingleSourceAction(sourceAlias: mediaAlias))
-
+            return .video(SingleSourceAction(sourceAlias: mediaAlias, hotkeys: hotkeys))
         case .image:
-            return .image(SingleSourceAction(sourceAlias: mediaAlias))
-
-        case .conditional:
-            guard triggerKey.count == 1 else { return nil }
-            let ifBranch = buildBranch(type: ifBranchType, jump: ifJumpOffset, play: ifPlayAlias)
-            let elseBranch = buildBranch(type: elseBranchType, jump: elseJumpOffset, play: "")
-            return .conditional(ConditionalAction(
-                triggerKey: triggerKey,
-                ifBranch: ifBranch,
-                elseBranch: elseBranch
-            ))
+            return .image(SingleSourceAction(sourceAlias: mediaAlias, hotkeys: hotkeys))
         }
     }
 
@@ -276,63 +193,189 @@ struct ActionEditorSheet: View {
         }
     }
 
-    private func buildBranch(type: BranchPickerType, jump: String, play: String) -> BranchSpec {
-        switch type {
-        case .advance:         return .advance
-        case .jumpBy:          return .jumpBy(Int(jump) ?? 1)
-        case .playThenAdvance: return .playThenAdvance(alias: play)
-        }
-    }
-
-    // MARK: - Populate from editing
-
     private func populateFromEditing() {
         guard let action = editing else { return }
+        hotkeys = action.hotkeys
         switch action {
         case .pdfSlides(let a):
-            selectedType = .pdfSlides
-            pdfAlias = a.sourceAlias
+            selectedType = .pdfSlides; pdfAlias = a.sourceAlias
             switch a.range {
-            case .all:
-                rangeType = .all
-            case .first(let n):
-                rangeType = .first; rangeN = "\(n)"
-            case .suffix(let f):
-                rangeType = .suffix; rangeFrom = "\(f)"
-            case .range(let a2, let b):
-                rangeType = .range; rangeFrom = "\(a2)"; rangeTo = "\(b)"
+            case .all:                 rangeType = .all
+            case .first(let n):        rangeType = .first; rangeN = "\(n)"
+            case .suffix(let f):       rangeType = .suffix; rangeFrom = "\(f)"
+            case .range(let a2, let b): rangeType = .range; rangeFrom = "\(a2)"; rangeTo = "\(b)"
             }
         case .video(let a):
             selectedType = .video; mediaAlias = a.sourceAlias
         case .image(let a):
             selectedType = .image; mediaAlias = a.sourceAlias
-        case .conditional(let a):
-            selectedType = .conditional
-            triggerKey = a.triggerKey
-            applyBranch(spec: a.ifBranch,
-                        typeSet: { ifBranchType = $0 },
-                        jumpSet: { ifJumpOffset = $0 },
-                        playSet: { ifPlayAlias = $0 })
-            applyBranch(spec: a.elseBranch,
-                        typeSet: { elseBranchType = $0 },
-                        jumpSet: { elseJumpOffset = $0 },
-                        playSet: { _ in })
+        }
+    }
+}
+
+// MARK: - Hotkey Editor Section
+
+struct HotkeyEditorSection: View {
+    @Binding var hotkeys: [HotkeyBehavior]
+    let actionKind: ActionEditorSheet.ActionType
+    let plan: Plan
+
+    var body: some View {
+        FormSection("Hotkeys") {
+            VStack(spacing: 6) {
+                ForEach($hotkeys) { $hk in
+                    HotkeyRow(hotkey: $hk, actionKind: actionKind, plan: plan) {
+                        hotkeys.removeAll { $0.id == hk.id }
+                    }
+                }
+
+                Button {
+                    hotkeys.append(HotkeyBehavior(key: "", action: defaultAction))
+                } label: {
+                    Label("Add Hotkey", systemImage: "plus")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white.opacity(0.5))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 7)
+                        .background(Color.white.opacity(0.04))
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .overlay(RoundedRectangle(cornerRadius: 6)
+                            .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [4]))
+                            .foregroundStyle(Color.white.opacity(0.12)))
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 
-    private func applyBranch(
-        spec: BranchSpec,
-        typeSet: (BranchPickerType) -> Void,
-        jumpSet: (String) -> Void,
-        playSet: (String) -> Void
-    ) {
-        switch spec {
-        case .advance:
-            typeSet(.advance)
-        case .jumpBy(let n):
-            typeSet(.jumpBy); jumpSet("\(n)")
-        case .playThenAdvance(let alias):
-            typeSet(.playThenAdvance); playSet(alias)
+    private var defaultAction: HotkeyAction {
+        switch actionKind {
+        case .pdfSlides: return .jumpToPage(1)
+        case .video, .image: return .replayFromStart
+        }
+    }
+}
+
+// MARK: - Hotkey Row
+
+struct HotkeyRow: View {
+    @Binding var hotkey: HotkeyBehavior
+    let actionKind: ActionEditorSheet.ActionType
+    let plan: Plan
+    let onDelete: () -> Void
+
+    @State private var pageStr: String = ""
+    @State private var detourAlias: String = ""
+
+    var body: some View {
+        HStack(spacing: 8) {
+            // Key input
+            TextField("key", text: $hotkey.key)
+                .textFieldStyle(.plain)
+                .font(.system(size: 13, weight: .bold, design: .monospaced))
+                .foregroundStyle(Color(hex: "#f97316"))
+                .multilineTextAlignment(.center)
+                .frame(width: 28)
+                .padding(6)
+                .background(Color.white.opacity(0.06))
+                .clipShape(RoundedRectangle(cornerRadius: 5))
+                .onChange(of: hotkey.key) { _, val in
+                    if val.count > 1 { hotkey.key = String(val.suffix(1)) }
+                }
+
+            // Action picker
+            Picker("", selection: actionTypeBinding) {
+                ForEach(availableActionTypes, id: \.self) { Text($0).tag($0) }
+            }
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity)
+
+            // Detail field
+            switch hotkey.action {
+            case .jumpToPage:
+                TextField("page #", text: $pageStr)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 12, design: .monospaced))
+                    .foregroundStyle(.white)
+                    .frame(width: 52)
+                    .padding(6)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .onChange(of: pageStr) { _, val in
+                        if let n = Int(val) { hotkey.action = .jumpToPage(n) }
+                    }
+                    .onAppear {
+                        if case .jumpToPage(let n) = hotkey.action { pageStr = "\(n)" }
+                    }
+
+            case .playDetour:
+                let mediaSources = plan.sources.filter { $0.kind == .video || $0.kind == .image }
+                Picker("", selection: $detourAlias) {
+                    Text("Pick…").tag("")
+                    ForEach(mediaSources) { src in Text(src.alias).tag(src.alias) }
+                }
+                .pickerStyle(.menu)
+                .frame(width: 80)
+                .onChange(of: detourAlias) { _, val in
+                    hotkey.action = .playDetour(alias: val)
+                }
+                .onAppear {
+                    if case .playDetour(let a) = hotkey.action { detourAlias = a }
+                }
+
+            default:
+                Spacer().frame(width: 52)
+            }
+
+            Button(action: onDelete) {
+                Image(systemName: "trash")
+                    .font(.system(size: 11))
+            }
+            .buttonStyle(IconButtonStyle(tint: .red))
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.white.opacity(0.04))
+        .clipShape(RoundedRectangle(cornerRadius: 6))
+    }
+
+    private var availableActionTypes: [String] {
+        var types = ["Jump to page", "Play detour", "Skip to next", "Go back"]
+        if actionKind == .video || actionKind == .image {
+            types = ["Replay from start", "Play detour", "Skip to next", "Go back"]
+        }
+        return types
+    }
+
+    private var actionTypeBinding: Binding<String> {
+        Binding(
+            get: { labelFor(hotkey.action) },
+            set: { label in
+                switch label {
+                case "Jump to page":
+                    let n = (pageStr.isEmpty ? 1 : Int(pageStr) ?? 1)
+                    hotkey.action = .jumpToPage(n)
+                case "Replay from start":
+                    hotkey.action = .replayFromStart
+                case "Play detour":
+                    hotkey.action = .playDetour(alias: detourAlias)
+                case "Skip to next":
+                    hotkey.action = .skipToNextAction
+                case "Go back":
+                    hotkey.action = .goBackToPreviousAction
+                default: break
+                }
+            }
+        )
+    }
+
+    private func labelFor(_ action: HotkeyAction) -> String {
+        switch action {
+        case .jumpToPage:            return "Jump to page"
+        case .replayFromStart:       return "Replay from start"
+        case .playDetour:            return "Play detour"
+        case .skipToNextAction:      return "Skip to next"
+        case .goBackToPreviousAction: return "Go back"
         }
     }
 }

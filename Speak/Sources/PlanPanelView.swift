@@ -119,10 +119,9 @@ struct ActionRow: View {
 
     private func actionColor(_ action: PlanAction) -> Color {
         switch action {
-        case .pdfSlides:   return Color(hex: "#8b5cf6")
-        case .video:       return Color(hex: "#f59e0b")
-        case .image:       return Color(hex: "#34d399")
-        case .conditional: return Color(hex: "#f97316")
+        case .pdfSlides: return Color(hex: "#8b5cf6")
+        case .video:     return Color(hex: "#f59e0b")
+        case .image:     return Color(hex: "#34d399")
         }
     }
 }

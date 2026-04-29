@@ -2,10 +2,9 @@ import SwiftUI
 import AVKit
 import AVFoundation
 
-/// Plays a video using AVKit's AVPlayerView.
-/// Calls `onFinished` when playback ends so the sequence can auto-advance.
 struct VideoSlideView: NSViewRepresentable {
     let url: URL
+    var restartToken: UUID
     var onFinished: () -> Void
 
     func makeCoordinator() -> Coordinator {
@@ -16,40 +15,43 @@ struct VideoSlideView: NSViewRepresentable {
         let player = AVPlayer(url: url)
         let view = AVPlayerView()
         view.player = player
-        view.controlsStyle = .none       // Hide controls for seamless presentation
+        view.controlsStyle = .none
         view.videoGravity = .resizeAspect
-
-        // Observe end of playback
-        context.coordinator.observe(player: player)
+        context.coordinator.attach(player: player)
         player.play()
-
         return view
     }
 
     func updateNSView(_ nsView: AVPlayerView, context: Context) {
-        // No-op: player is set up once in makeNSView
+        if context.coordinator.lastRestartToken != restartToken {
+            context.coordinator.lastRestartToken = restartToken
+            context.coordinator.restart()
+        }
     }
 
     // MARK: - Coordinator
 
     final class Coordinator: NSObject {
         var onFinished: () -> Void
-        private var observer: NSObjectProtocol?
+        var lastRestartToken: UUID = UUID()
         private var player: AVPlayer?
+        private var observer: NSObjectProtocol?
 
         init(onFinished: @escaping () -> Void) {
             self.onFinished = onFinished
         }
 
-        func observe(player: AVPlayer) {
+        func attach(player: AVPlayer) {
             self.player = player
             observer = NotificationCenter.default.addObserver(
                 forName: .AVPlayerItemDidPlayToEndTime,
                 object: player.currentItem,
                 queue: .main
-            ) { [weak self] _ in
-                self?.onFinished()
-            }
+            ) { [weak self] _ in self?.onFinished() }
+        }
+
+        func restart() {
+            player?.seek(to: .zero) { [weak self] _ in self?.player?.play() }
         }
 
         deinit {

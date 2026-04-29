@@ -8,17 +8,12 @@ struct SlideStageView: View {
     @FocusState private var isFocused: Bool
     @State private var keyMonitor: Any?
 
-    // The slide to actually render (queuedSlide overrides currentSlide during if-branch playback)
-    private var activeSlide: Slide? {
-        vm.queuedSlide ?? vm.currentSlide
-    }
-
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
             // MARK: - Slide Content
-            if let slide = activeSlide {
+            if let slide = vm.currentSlide {
                 Group {
                     switch slide {
                     case .pdfPage(let page):
@@ -26,7 +21,7 @@ struct SlideStageView: View {
                             .transition(.opacity)
 
                     case .video(let url):
-                        VideoSlideView(url: url) {
+                        VideoSlideView(url: url, restartToken: vm.videoRestartToken) {
                             vm.onVideoFinished()
                         }
                         .transition(.opacity)
@@ -43,21 +38,9 @@ struct SlideStageView: View {
             // MARK: - Drawing Overlay
             DrawingOverlayView(drawing: drawing, slideIndex: vm.currentIndex)
 
-            // MARK: - Conditional Decision Banner
-            if let decision = vm.pendingDecision {
-                VStack {
-                    DecisionBanner(decision: decision)
-                        .padding(.top, 16)
-                    Spacer()
-                }
-                .transition(.move(edge: .top).combined(with: .opacity))
-                .animation(.spring(response: 0.3), value: vm.hasPendingDecision)
-            }
-
             // MARK: - HUD Overlay
             if vm.showControls {
                 VStack {
-                    // Back button top-left
                     HStack {
                         Button(action: onBack) {
                             HStack(spacing: 6) {
@@ -78,6 +61,13 @@ struct SlideStageView: View {
                     }
 
                     Spacer()
+
+                    // Hotkey hints
+                    let hotkeys = vm.currentHotkeys
+                    if !hotkeys.isEmpty {
+                        HotkeyHintBar(hotkeys: hotkeys)
+                            .padding(.bottom, 8)
+                    }
 
                     HUDBar(vm: vm)
                         .padding(.bottom, 20)
@@ -113,19 +103,16 @@ struct SlideStageView: View {
                     return event
                 case .keyDown:
                     switch event.keyCode {
-                    case 123, 126: vm.previous(); return nil       // left / up
-                    case 124, 125: vm.next(); return nil           // right / down
-                    case 35: drawing.activatePen(); return nil     // p
-                    case 4:  drawing.activateHighlight(); return nil // h
-                    case 6 where event.modifierFlags.contains(.command): // ⌘Z
+                    case 123, 126: vm.previous(); return nil
+                    case 124, 125: vm.next(); return nil
+                    case 35: drawing.activatePen(); return nil
+                    case 4:  drawing.activateHighlight(); return nil
+                    case 6 where event.modifierFlags.contains(.command):
                         drawing.undo(); return nil
                     default:
-                        // Check trigger key for pending decision
-                        if let chars = event.characters, chars.count == 1,
-                           let ch = chars.first,
-                           let decision = vm.pendingDecision, decision.triggerKey == ch {
+                        // Route character keys to hotkey dispatch
+                        if let ch = event.characters?.first, !event.modifierFlags.contains(.command) {
                             vm.fireTriggerKey(ch)
-                            return nil
                         }
                         return event
                     }
@@ -144,45 +131,32 @@ struct SlideStageView: View {
             isFocused = true
             vm.triggerControlsVisibility()
         }
-        .onKeyPress(.space) {
-            vm.next()
-            return .handled
-        }
-        .onKeyPress(.escape) {
-            NSApp.keyWindow?.toggleFullScreen(nil)
-            return .handled
-        }
+        .onKeyPress(.space) { vm.next(); return .handled }
+        .onKeyPress(.escape) { NSApp.keyWindow?.toggleFullScreen(nil); return .handled }
     }
 }
 
-// MARK: - Decision Banner
+// MARK: - Hotkey Hint Bar
 
-struct DecisionBanner: View {
-    let decision: Decision
+struct HotkeyHintBar: View {
+    let hotkeys: [CompiledHotkey]
 
     var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "arrow.triangle.branch")
-                .font(.system(size: 12))
-                .foregroundStyle(Color(hex: "#f97316"))
-
-            Text("Press ")
-                .font(.system(size: 12))
-                .foregroundStyle(.white.opacity(0.7))
-            +
-            Text("[\(String(decision.triggerKey))]")
-                .font(.system(size: 12, weight: .bold, design: .monospaced))
-                .foregroundStyle(Color(hex: "#f97316"))
-            +
-            Text(" to take the alternate branch")
-                .font(.system(size: 12))
-                .foregroundStyle(.white.opacity(0.7))
+        HStack(spacing: 6) {
+            ForEach(hotkeys, id: \.key) { hk in
+                HStack(spacing: 4) {
+                    Text("[\(String(hk.key))]")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "#f97316"))
+                    Text(hk.displayLabel)
+                        .font(.system(size: 10))
+                        .foregroundStyle(.white.opacity(0.6))
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Capsule().fill(.ultraThinMaterial))
+            }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(.ultraThinMaterial)
-        .clipShape(Capsule())
-        .shadow(color: .black.opacity(0.3), radius: 8, y: 2)
     }
 }
 
