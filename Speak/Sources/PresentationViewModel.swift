@@ -51,8 +51,6 @@ final class PresentationViewModel: ObservableObject {
 
     func next() {
         guard let seq = sequence else { return }
-        // Don't advance past video until it finishes
-        if isVideoSlide && !videoFinished { return }
         if currentIndex < seq.totalCount - 1 {
             videoFinished = false
             currentIndex += 1

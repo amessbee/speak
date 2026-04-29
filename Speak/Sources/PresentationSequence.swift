@@ -16,6 +16,7 @@ enum Slide {
 /// Builds the ordered sequence of slides from a PDF and a video.
 /// Rule: first N pdf pages → video → remaining pdf pages.
 struct PresentationSequence {
+    let document: PDFDocument
     let slides: [Slide]
     let totalCount: Int
 
@@ -50,6 +51,7 @@ struct PresentationSequence {
             }
         }
 
+        self.document = pdf
         self.slides = sequence
         self.totalCount = sequence.count
     }
