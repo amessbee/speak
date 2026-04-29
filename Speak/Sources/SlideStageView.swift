@@ -1,10 +1,10 @@
 import SwiftUI
-
 /// The main presentation stage.
 /// Renders whichever slide is current (PDF page or video),
 /// handles keyboard navigation, and shows a minimal HUD.
 struct SlideStageView: View {
     @ObservedObject var vm: PresentationViewModel
+    @StateObject private var drawing = DrawingViewModel()
     @FocusState private var isFocused: Bool
     @State private var keyMonitor: Any?
 
@@ -28,8 +28,11 @@ struct SlideStageView: View {
                     }
                 }
                 .animation(.easeInOut(duration: 0.25), value: vm.currentIndex)
-                .id(vm.currentIndex) // Forces view recreation on slide change
+                .id(vm.currentIndex)
             }
+
+            // MARK: - Drawing Overlay
+            DrawingOverlayView(drawing: drawing, slideIndex: vm.currentIndex)
 
             // MARK: - HUD Overlay
             if vm.showControls {
@@ -41,6 +44,20 @@ struct SlideStageView: View {
                 .transition(.opacity)
                 .animation(.easeInOut(duration: 0.3), value: vm.showControls)
             }
+
+            // MARK: - Drawing Tool Panel
+            HStack {
+                Spacer()
+                if drawing.isPenMode {
+                    DrawingToolPanel(drawing: drawing, slideIndex: vm.currentIndex)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                            removal: .move(edge: .trailing).combined(with: .opacity)
+                        ))
+                        .padding(.trailing, 12)
+                }
+            }
+            .animation(.spring(response: 0.3, dampingFraction: 0.85), value: drawing.isPenMode)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .focusable()
@@ -48,15 +65,18 @@ struct SlideStageView: View {
         .onAppear {
             isFocused = true
             vm.triggerControlsVisibility()
-            // Use a window-level monitor so arrow keys work even when HUD buttons steal focus
-            keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-                switch event.keyCode {
-                case 123, 126: // left arrow, up arrow
-                    vm.previous()
-                    return nil
-                case 124, 125: // right arrow, down arrow
-                    vm.next()
-                    return nil
+            keyMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .mouseMoved, .leftMouseDragged]) { event in
+                switch event.type {
+                case .mouseMoved, .leftMouseDragged:
+                    if drawing.isPenMode { NSCursor.crosshair.set() }
+                    return event
+                case .keyDown:
+                    switch event.keyCode {
+                    case 123, 126: vm.previous(); return nil
+                    case 124, 125: vm.next(); return nil
+                    case 35: drawing.togglePenMode(); return nil
+                    default: return event
+                    }
                 default:
                     return event
                 }

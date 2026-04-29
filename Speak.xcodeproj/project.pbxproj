@@ -15,6 +15,9 @@
 		AA000006 /* VideoSlideView.swift */ = {isa = PBXBuildFile; fileRef = AA100006 /* VideoSlideView.swift */; };
 		AA000007 /* SlideStageView.swift */ = {isa = PBXBuildFile; fileRef = AA100007 /* SlideStageView.swift */; };
 		AA000008 /* SetupView.swift */ = {isa = PBXBuildFile; fileRef = AA100008 /* SetupView.swift */; };
+		AA000009 /* DrawingViewModel.swift */ = {isa = PBXBuildFile; fileRef = AA100009 /* DrawingViewModel.swift */; };
+		AA000010 /* DrawingOverlayView.swift */ = {isa = PBXBuildFile; fileRef = AA100010 /* DrawingOverlayView.swift */; };
+		AA000011 /* DrawingToolPanel.swift */ = {isa = PBXBuildFile; fileRef = AA100011 /* DrawingToolPanel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,9 @@
 		AA100006 /* VideoSlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoSlideView.swift; path = Sources/VideoSlideView.swift; sourceTree = "<group>"; };
 		AA100007 /* SlideStageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SlideStageView.swift; path = Sources/SlideStageView.swift; sourceTree = "<group>"; };
 		AA100008 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SetupView.swift; path = Sources/SetupView.swift; sourceTree = "<group>"; };
+		AA100009 /* DrawingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DrawingViewModel.swift; path = Sources/DrawingViewModel.swift; sourceTree = "<group>"; };
+		AA100010 /* DrawingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DrawingOverlayView.swift; path = Sources/DrawingOverlayView.swift; sourceTree = "<group>"; };
+		AA100011 /* DrawingToolPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DrawingToolPanel.swift; path = Sources/DrawingToolPanel.swift; sourceTree = "<group>"; };
 		AAPROD001 /* Speak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Speak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -58,6 +64,9 @@
 				AA100006 /* VideoSlideView.swift */,
 				AA100007 /* SlideStageView.swift */,
 				AA100008 /* SetupView.swift */,
+				AA100009 /* DrawingViewModel.swift */,
+				AA100010 /* DrawingOverlayView.swift */,
+				AA100011 /* DrawingToolPanel.swift */,
 			);
 			path = Speak;
 			sourceTree = "<group>";
@@ -138,6 +147,9 @@
 				AA000006 /* VideoSlideView.swift */,
 				AA000007 /* SlideStageView.swift */,
 				AA000008 /* SetupView.swift */,
+				AA000009 /* DrawingViewModel.swift */,
+				AA000010 /* DrawingOverlayView.swift */,
+				AA000011 /* DrawingToolPanel.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
