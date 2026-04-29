@@ -18,6 +18,16 @@
 		AA000009 /* DrawingViewModel.swift */ = {isa = PBXBuildFile; fileRef = AA100009 /* DrawingViewModel.swift */; };
 		AA000010 /* DrawingOverlayView.swift */ = {isa = PBXBuildFile; fileRef = AA100010 /* DrawingOverlayView.swift */; };
 		AA000011 /* DrawingToolPanel.swift */ = {isa = PBXBuildFile; fileRef = AA100011 /* DrawingToolPanel.swift */; };
+		AA000012 /* Plan.swift */ = {isa = PBXBuildFile; fileRef = AA100012 /* Plan.swift */; };
+		AA000013 /* PlanExecutor.swift */ = {isa = PBXBuildFile; fileRef = AA100013 /* PlanExecutor.swift */; };
+		AA000014 /* AppState.swift */ = {isa = PBXBuildFile; fileRef = AA100014 /* AppState.swift */; };
+		AA000015 /* Extensions.swift */ = {isa = PBXBuildFile; fileRef = AA100015 /* Extensions.swift */; };
+		AA000016 /* ImageSlideView.swift */ = {isa = PBXBuildFile; fileRef = AA100016 /* ImageSlideView.swift */; };
+		AA000017 /* WorkspaceView.swift */ = {isa = PBXBuildFile; fileRef = AA100017 /* WorkspaceView.swift */; };
+		AA000018 /* SourcePanelView.swift */ = {isa = PBXBuildFile; fileRef = AA100018 /* SourcePanelView.swift */; };
+		AA000019 /* PlanPanelView.swift */ = {isa = PBXBuildFile; fileRef = AA100019 /* PlanPanelView.swift */; };
+		AA000020 /* ActionEditorSheet.swift */ = {isa = PBXBuildFile; fileRef = AA100020 /* ActionEditorSheet.swift */; };
+		AARES0001 /* Info.plist */ = {isa = PBXBuildFile; fileRef = AARES0002 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +42,16 @@
 		AA100009 /* DrawingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DrawingViewModel.swift; path = Sources/DrawingViewModel.swift; sourceTree = "<group>"; };
 		AA100010 /* DrawingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DrawingOverlayView.swift; path = Sources/DrawingOverlayView.swift; sourceTree = "<group>"; };
 		AA100011 /* DrawingToolPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DrawingToolPanel.swift; path = Sources/DrawingToolPanel.swift; sourceTree = "<group>"; };
+		AA100012 /* Plan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Plan.swift; path = Sources/Plan.swift; sourceTree = "<group>"; };
+		AA100013 /* PlanExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PlanExecutor.swift; path = Sources/PlanExecutor.swift; sourceTree = "<group>"; };
+		AA100014 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppState.swift; path = Sources/AppState.swift; sourceTree = "<group>"; };
+		AA100015 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = "<group>"; };
+		AA100016 /* ImageSlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageSlideView.swift; path = Sources/ImageSlideView.swift; sourceTree = "<group>"; };
+		AA100017 /* WorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WorkspaceView.swift; path = Sources/WorkspaceView.swift; sourceTree = "<group>"; };
+		AA100018 /* SourcePanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SourcePanelView.swift; path = Sources/SourcePanelView.swift; sourceTree = "<group>"; };
+		AA100019 /* PlanPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PlanPanelView.swift; path = Sources/PlanPanelView.swift; sourceTree = "<group>"; };
+		AA100020 /* ActionEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ActionEditorSheet.swift; path = Sources/ActionEditorSheet.swift; sourceTree = "<group>"; };
+		AARES0002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Speak/Info.plist; sourceTree = SOURCE_ROOT; };
 		AAPROD001 /* Speak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Speak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -67,6 +87,16 @@
 				AA100009 /* DrawingViewModel.swift */,
 				AA100010 /* DrawingOverlayView.swift */,
 				AA100011 /* DrawingToolPanel.swift */,
+				AA100012 /* Plan.swift */,
+				AA100013 /* PlanExecutor.swift */,
+				AA100014 /* AppState.swift */,
+				AA100015 /* Extensions.swift */,
+				AA100016 /* ImageSlideView.swift */,
+				AA100017 /* WorkspaceView.swift */,
+				AA100018 /* SourcePanelView.swift */,
+				AA100019 /* PlanPanelView.swift */,
+				AA100020 /* ActionEditorSheet.swift */,
+				AARES0002 /* Info.plist */,
 			);
 			path = Speak;
 			sourceTree = "<group>";
@@ -129,7 +159,8 @@
 		AABP0002 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -150,6 +181,15 @@
 				AA000009 /* DrawingViewModel.swift */,
 				AA000010 /* DrawingOverlayView.swift */,
 				AA000011 /* DrawingToolPanel.swift */,
+				AA000012 /* Plan.swift */,
+				AA000013 /* PlanExecutor.swift */,
+				AA000014 /* AppState.swift */,
+				AA000015 /* Extensions.swift */,
+				AA000016 /* ImageSlideView.swift */,
+				AA000017 /* WorkspaceView.swift */,
+				AA000018 /* SourcePanelView.swift */,
+				AA000019 /* PlanPanelView.swift */,
+				AA000020 /* ActionEditorSheet.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,10 +295,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSHumanReadableDescription = "Seamless PDF and video presenter for macOS";
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Speak/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
@@ -281,10 +319,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSHumanReadableDescription = "Seamless PDF and video presenter for macOS";
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Speak/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;

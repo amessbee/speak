@@ -1,29 +1,39 @@
 import SwiftUI
 
-/// Root view: shows SetupView until a presentation is loaded,
-/// then switches to SlideStageView.
 struct ContentView: View {
+    @EnvironmentObject var appState: AppState
     @StateObject private var vm = PresentationViewModel()
+    @State private var plan: Plan = .empty
+    @State private var planFileURL: URL?
 
     var body: some View {
         Group {
             if vm.isLoaded {
-                SlideStageView(vm: vm)
-                    .toolbar {
-                        ToolbarItem(placement: .navigation) {
-                            Button("← Back to Setup") {
-                                vm.isLoaded = false
-                            }
-                            .buttonStyle(.plain)
-                            .font(.system(size: 13))
-                            .foregroundStyle(.white.opacity(0.5))
-                        }
-                    }
+                SlideStageView(vm: vm) {
+                    vm.unload()
+                }
             } else {
-                SetupView(vm: vm)
+                WorkspaceView(vm: vm, plan: $plan, currentFileURL: $planFileURL)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .preferredColorScheme(.dark)
+        .onChange(of: appState.pendingPlanURL) { _, url in
+            guard let url else { return }
+            appState.pendingPlanURL = nil
+            loadPlan(from: url)
+        }
+    }
+
+    private func loadPlan(from url: URL) {
+        do {
+            let data = try Data(contentsOf: url)
+            let decoded = try JSONDecoder().decode(Plan.self, from: data)
+            plan = decoded
+            planFileURL = url
+            vm.load(plan: decoded)
+        } catch {
+            print("Failed to load plan: \(error)")
+        }
     }
 }
