@@ -19,7 +19,7 @@ struct DrawingOverlayView: View {
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { value in
                     if drawing.currentStroke == nil {
-                        drawing.startStroke(at: value.location, slideIndex: slideIndex)
+                        drawing.startStroke(at: value.location)
                     } else {
                         drawing.addPoint(value.location)
                     }
@@ -35,19 +35,30 @@ struct DrawingOverlayView: View {
 
     private func render(_ stroke: DrawingViewModel.Stroke, in ctx: GraphicsContext) {
         guard !stroke.points.isEmpty else { return }
+
+        let shading: GraphicsContext.Shading = stroke.isHighlight
+            ? .color(stroke.color.opacity(0.38))
+            : .color(stroke.color)
+        let style = StrokeStyle(
+            lineWidth: stroke.width,
+            lineCap: stroke.isHighlight ? .square : .round,
+            lineJoin: stroke.isHighlight ? .miter : .round
+        )
+
         if stroke.points.count == 1 {
-            let p = stroke.points[0]
-            let r = stroke.width / 2
-            var dot = Path()
-            dot.addEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: stroke.width, height: stroke.width))
-            ctx.fill(dot, with: .color(stroke.color))
+            let p = stroke.points[0], r = stroke.width / 2
+            var shape = Path()
+            if stroke.isHighlight {
+                shape.addRect(CGRect(x: p.x - r, y: p.y - r, width: stroke.width, height: stroke.width))
+            } else {
+                shape.addEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: stroke.width, height: stroke.width))
+            }
+            ctx.fill(shape, with: shading)
         } else {
             var path = Path()
             path.move(to: stroke.points[0])
             stroke.points.dropFirst().forEach { path.addLine(to: $0) }
-            ctx.stroke(path, with: .color(stroke.color),
-                       style: StrokeStyle(lineWidth: stroke.width, lineCap: .round, lineJoin: .round))
+            ctx.stroke(path, with: shading, style: style)
         }
     }
 }
-

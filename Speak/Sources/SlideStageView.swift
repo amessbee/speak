@@ -72,9 +72,12 @@ struct SlideStageView: View {
                     return event
                 case .keyDown:
                     switch event.keyCode {
-                    case 123, 126: vm.previous(); return nil
-                    case 124, 125: vm.next(); return nil
-                    case 35: drawing.togglePenMode(); return nil
+                    case 123, 126: vm.previous(); return nil       // left / up arrow
+                    case 124, 125: vm.next(); return nil           // right / down arrow
+                    case 35: drawing.activatePen(); return nil     // p
+                    case 4:  drawing.activateHighlight(); return nil // h
+                    case 6 where event.modifierFlags.contains(.command): // ⌘Z
+                        drawing.undo(); return nil
                     default: return event
                     }
                 default:
