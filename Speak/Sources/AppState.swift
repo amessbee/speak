@@ -8,8 +8,13 @@ final class AppState: ObservableObject {
     private init() {}
 
     @Published var pendingPlanURL: URL?
+    @Published var pendingPDFURL: URL?
 
     func open(_ url: URL) {
-        pendingPlanURL = url
+        switch url.pathExtension.lowercased() {
+        case "speakplan": pendingPlanURL = url
+        case "pdf":       pendingPDFURL  = url
+        default:          break
+        }
     }
 }

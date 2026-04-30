@@ -1,0 +1,16 @@
+{
+  "source": "/Users/lupin/work/mudassir/speak/Speak/Sources/ImageSlideView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Cannot load image",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 16
+        }
+      }
+    ]
+  },
+  "version": 1
+}

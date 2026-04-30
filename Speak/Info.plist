@@ -19,14 +19,12 @@
     <key>CFBundleVersion</key>
     <string>1</string>
 
-    <!-- Document type: .speakplan -->
     <key>CFBundleDocumentTypes</key>
     <array>
+        <!-- .speakplan plan files -->
         <dict>
             <key>CFBundleTypeExtensions</key>
-            <array>
-                <string>speakplan</string>
-            </array>
+            <array><string>speakplan</string></array>
             <key>CFBundleTypeName</key>
             <string>Speak Plan</string>
             <key>CFBundleTypeRole</key>
@@ -34,9 +32,20 @@
             <key>LSHandlerRank</key>
             <string>Owner</string>
             <key>LSItemContentTypes</key>
-            <array>
-                <string>com.speak.plan</string>
-            </array>
+            <array><string>com.speak.plan</string></array>
+        </dict>
+        <!-- PDF files — open and present all pages immediately -->
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array><string>pdf</string></array>
+            <key>CFBundleTypeName</key>
+            <string>PDF Document</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array><string>com.adobe.pdf</string></array>
         </dict>
     </array>
 

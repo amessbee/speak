@@ -23,6 +23,11 @@ struct ContentView: View {
             appState.pendingPlanURL = nil
             loadPlan(from: url)
         }
+        .onChange(of: appState.pendingPDFURL) { _, url in
+            guard let url else { return }
+            appState.pendingPDFURL = nil
+            presentPDF(url)
+        }
     }
 
     private func loadPlan(from url: URL) {
@@ -35,5 +40,15 @@ struct ContentView: View {
         } catch {
             print("Failed to load plan: \(error)")
         }
+    }
+
+    private func presentPDF(_ url: URL) {
+        let alias = url.deletingPathExtension().lastPathComponent
+        let source = SourceFile(alias: alias, path: url.path, kind: .pdf)
+        let action = PlanAction.pdfSlides(PDFSlidesAction(sourceAlias: alias, range: .all))
+        let quickPlan = Plan(sources: [source], actions: [action])
+        plan = quickPlan
+        planFileURL = nil
+        vm.load(plan: quickPlan)
     }
 }

@@ -1,0 +1,24 @@
+{
+  "source": "/Users/lupin/work/mudassir/speak/Speak/Sources/PlanPanelView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "PLAN",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "No actions yet.\nClick + to add PDF slides, videos, images, or conditional branches.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 36
+        }
+      }
+    ]
+  },
+  "version": 1
+}

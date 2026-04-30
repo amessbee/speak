@@ -21,9 +21,7 @@ struct SpeakApp: App {
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func application(_ application: NSApplication, open urls: [URL]) {
-        guard let url = urls.first(where: { $0.pathExtension == "speakplan" }) else { return }
-        Task { @MainActor in
-            AppState.shared.open(url)
-        }
+        guard let url = urls.first else { return }
+        Task { @MainActor in AppState.shared.open(url) }
     }
 }
