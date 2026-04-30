@@ -29,6 +29,7 @@
 		AA000020 /* ActionEditorSheet.swift */ = {isa = PBXBuildFile; fileRef = AA100020 /* ActionEditorSheet.swift */; };
 		AARES0001 /* Info.plist */ = {isa = PBXBuildFile; fileRef = AARES0002 /* Info.plist */; };
 		AAASSET01 /* Assets.xcassets */ = {isa = PBXBuildFile; fileRef = AAASSET02 /* Assets.xcassets */; };
+		AAICON001 /* SpeakDoc.icns */ = {isa = PBXBuildFile; fileRef = AAICON002 /* SpeakDoc.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		AA100020 /* ActionEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ActionEditorSheet.swift; path = Sources/ActionEditorSheet.swift; sourceTree = "<group>"; };
 		AARES0002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Speak/Info.plist; sourceTree = SOURCE_ROOT; };
 		AAASSET02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Speak/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		AAICON002 /* SpeakDoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = SpeakDoc.icns; path = Speak/SpeakDoc.icns; sourceTree = SOURCE_ROOT; };
 		AAPROD001 /* Speak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Speak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -100,6 +102,7 @@
 				AA100020 /* ActionEditorSheet.swift */,
 				AARES0002 /* Info.plist */,
 				AAASSET02 /* Assets.xcassets */,
+				AAICON002 /* SpeakDoc.icns */,
 			);
 			path = Speak;
 			sourceTree = "<group>";
@@ -164,6 +167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAASSET01 /* Assets.xcassets */,
+				AAICON001 /* SpeakDoc.icns */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

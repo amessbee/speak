@@ -1,0 +1,32 @@
+{
+  "source": "/Users/lupin/work/mudassir/speak/Speak/Sources/SourcePanelView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "SOURCES",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 13
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add PDFs, images, or videos\nusing the + button above",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "alias",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 133
+        }
+      }
+    ]
+  },
+  "version": 1
+}

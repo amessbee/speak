@@ -1,0 +1,152 @@
+{
+  "source": "/Users/lupin/work/mudassir/speak/Speak/Sources/ActionEditorSheet.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Add Action",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 42
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit Action",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 42
+        }
+      },
+      {
+        "comment": "",
+        "key": "Type",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "No %@ sources added yet.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 144
+        }
+      },
+      {
+        "comment": "",
+        "key": "Source",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 148
+        }
+      },
+      {
+        "comment": "",
+        "key": "Range",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 79
+        }
+      },
+      {
+        "comment": "",
+        "key": "–",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 123
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select…",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 149
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ — %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Hotkey",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 235
+        }
+      },
+      {
+        "comment": "",
+        "key": "key",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 287
+        }
+      },
+      {
+        "comment": "",
+        "key": "page #",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 296
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 313
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pick…",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 314
+        }
+      }
+    ]
+  },
+  "version": 1
+}

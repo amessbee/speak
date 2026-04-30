@@ -1,0 +1,32 @@
+{
+  "source": "/Users/lupin/work/mudassir/speak/Speak/Sources/SlideStageView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Workspace",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 48
+        }
+      },
+      {
+        "comment": "",
+        "key": "[%@]",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 148
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld / %lld",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 177
+        }
+      }
+    ]
+  },
+  "version": 1
+}

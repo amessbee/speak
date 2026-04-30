@@ -1,0 +1,116 @@
+{
+  "" : {
+    "const-values" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary.swiftconstvalues",
+    "dependencies" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary.d",
+    "diagnostics" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary.dia",
+    "emit-module-dependencies" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary-emit-module.dia",
+    "pch" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary.swiftdeps"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/ActionEditorSheet.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/ActionEditorSheet.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/ActionEditorSheet.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/ActionEditorSheet.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/AppState.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/AppState.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/AppState.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/AppState.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/ContentView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/ContentView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/DrawingOverlayView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingOverlayView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingOverlayView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingOverlayView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/DrawingToolPanel.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingToolPanel.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingToolPanel.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingToolPanel.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/DrawingViewModel.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingViewModel.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingViewModel.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/DrawingViewModel.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/Extensions.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/Extensions.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Extensions.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Extensions.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/ImageSlideView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/ImageSlideView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/ImageSlideView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/ImageSlideView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/PDFPageView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/PDFPageView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PDFPageView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PDFPageView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/Plan.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/Plan.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Plan.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Plan.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/PlanExecutor.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/PlanExecutor.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PlanExecutor.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PlanExecutor.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/PlanPanelView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/PlanPanelView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PlanPanelView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PlanPanelView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/PresentationSequence.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/PresentationSequence.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PresentationSequence.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PresentationSequence.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/PresentationViewModel.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/PresentationViewModel.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PresentationViewModel.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/PresentationViewModel.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/SetupView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/SetupView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SetupView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SetupView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/SlideStageView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/SlideStageView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SlideStageView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SlideStageView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/SourcePanelView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/SourcePanelView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SourcePanelView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SourcePanelView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/SpeakApp.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/SpeakApp.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SpeakApp.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/SpeakApp.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/VideoSlideView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/VideoSlideView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/VideoSlideView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/VideoSlideView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/WorkspaceView.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/WorkspaceView.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/WorkspaceView.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/WorkspaceView.o"
+  },
+  "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/Speak.build/Release/Speak.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "/Users/lupin/work/mudassir/speak/Speak/Sources/SpeakApp.swift" : {
+    "abi-baseline-json" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak.abi.json",
+    "const-values" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary.swiftconstvalues",
+    "dependencies" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary.d",
+    "diagnostics" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-primary.dia",
+    "objc-header" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak-Swift.h",
+    "swiftdoc" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak.swiftdoc",
+    "swiftmodule" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak.swiftmodule",
+    "swiftsourceinfo" : "/Users/lupin/work/mudassir/speak/build/DerivedData/Build/Intermediates.noindex/Speak.build/Release/Speak.build/Objects-normal/arm64/Speak.swiftsourceinfo"
+  }
+}
