@@ -41,8 +41,10 @@ final class PresentationViewModel: ObservableObject {
     }
 
     var isVideoSlide: Bool {
-        if case .video = currentSlide { return true }
-        return false
+        switch currentSlide {
+        case .video, .youtube: return true
+        default:               return false
+        }
     }
 
     var currentHotkeys: [CompiledHotkey] {
@@ -149,9 +151,10 @@ final class PresentationViewModel: ObservableObject {
 
     private func slide(from item: ExecutableItem) -> Slide? {
         switch item {
-        case .pdfPage(let p): return .pdfPage(p)
-        case .video(let u):   return .video(u)
-        case .image(let u):   return .image(u)
+        case .pdfPage(let p):   return .pdfPage(p)
+        case .video(let u):     return .video(u)
+        case .image(let u):     return .image(u)
+        case .youtube(let url): return .youtube(url)
         }
     }
 }

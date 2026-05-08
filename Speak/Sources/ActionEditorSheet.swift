@@ -20,6 +20,7 @@ struct ActionEditorSheet: View {
         case pdfSlides = "PDF Slides"
         case video     = "Video"
         case image     = "Image"
+        case youtube   = "YouTube"
     }
 
     enum RangePickerType: String, CaseIterable {
@@ -104,6 +105,11 @@ struct ActionEditorSheet: View {
                         FormSection("Image Source") {
                             aliasPickerFor(kind: .image, selection: $mediaAlias)
                         }
+
+                    case .youtube:
+                        FormSection("YouTube Source") {
+                            aliasPickerFor(kind: .youtube, selection: $mediaAlias)
+                        }
                     }
 
                     // Hotkeys section
@@ -162,8 +168,8 @@ struct ActionEditorSheet: View {
 
     var canCommit: Bool {
         switch selectedType {
-        case .pdfSlides:       return !pdfAlias.isEmpty
-        case .video, .image:   return !mediaAlias.isEmpty
+        case .pdfSlides:              return !pdfAlias.isEmpty
+        case .video, .image, .youtube: return !mediaAlias.isEmpty
         }
     }
 
@@ -181,6 +187,8 @@ struct ActionEditorSheet: View {
             return .video(SingleSourceAction(sourceAlias: mediaAlias, hotkeys: hotkeys))
         case .image:
             return .image(SingleSourceAction(sourceAlias: mediaAlias, hotkeys: hotkeys))
+        case .youtube:
+            return .youtube(SingleSourceAction(sourceAlias: mediaAlias, hotkeys: hotkeys))
         }
     }
 
@@ -209,6 +217,8 @@ struct ActionEditorSheet: View {
             selectedType = .video; mediaAlias = a.sourceAlias
         case .image(let a):
             selectedType = .image; mediaAlias = a.sourceAlias
+        case .youtube(let a):
+            selectedType = .youtube; mediaAlias = a.sourceAlias
         }
     }
 }
@@ -250,8 +260,8 @@ struct HotkeyEditorSection: View {
 
     private var defaultAction: HotkeyAction {
         switch actionKind {
-        case .pdfSlides: return .jumpToPage(1)
-        case .video, .image: return .replayFromStart
+        case .pdfSlides:             return .jumpToPage(1)
+        case .video, .image, .youtube: return .replayFromStart
         }
     }
 }
@@ -309,7 +319,7 @@ struct HotkeyRow: View {
                     }
 
             case .playDetour:
-                let mediaSources = plan.sources.filter { $0.kind == .video || $0.kind == .image }
+                let mediaSources = plan.sources.filter { $0.kind == .video || $0.kind == .image || $0.kind == .youtube }
                 Picker("", selection: $detourAlias) {
                     Text("Pick…").tag("")
                     ForEach(mediaSources) { src in Text(src.alias).tag(src.alias) }
@@ -340,11 +350,12 @@ struct HotkeyRow: View {
     }
 
     private var availableActionTypes: [String] {
-        var types = ["Jump to page", "Play detour", "Skip to next", "Go back"]
-        if actionKind == .video || actionKind == .image {
-            types = ["Replay from start", "Play detour", "Skip to next", "Go back"]
+        switch actionKind {
+        case .pdfSlides:
+            return ["Jump to page", "Play detour", "Skip to next", "Go back"]
+        case .video, .image, .youtube:
+            return ["Replay from start", "Play detour", "Skip to next", "Go back"]
         }
-        return types
     }
 
     private var actionTypeBinding: Binding<String> {

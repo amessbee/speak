@@ -20,37 +20,41 @@ struct SourceFile: Identifiable, Codable, Equatable {
 }
 
 enum SourceKind: String, Codable, CaseIterable {
-    case pdf, image, video
+    case pdf, image, video, youtube
 
     var label: String {
         switch self {
-        case .pdf:   return "PDF"
-        case .image: return "Image"
-        case .video: return "Video"
+        case .pdf:     return "PDF"
+        case .image:   return "Image"
+        case .video:   return "Video"
+        case .youtube: return "YouTube"
         }
     }
 
     var systemImage: String {
         switch self {
-        case .pdf:   return "doc.richtext"
-        case .image: return "photo"
-        case .video: return "play.rectangle"
+        case .pdf:     return "doc.richtext"
+        case .image:   return "photo"
+        case .video:   return "play.rectangle"
+        case .youtube: return "play.circle"
         }
     }
 
     var aliasPrefix: String {
         switch self {
-        case .pdf:   return "pdf"
-        case .image: return "image"
-        case .video: return "video"
+        case .pdf:     return "pdf"
+        case .image:   return "image"
+        case .video:   return "video"
+        case .youtube: return "yt"
         }
     }
 
     var allowedExtensions: [String] {
         switch self {
-        case .pdf:   return ["pdf"]
-        case .image: return ["png", "jpg", "jpeg", "heic", "tiff", "gif", "bmp", "webp"]
-        case .video: return ["mov", "mp4", "m4v", "avi"]
+        case .pdf:     return ["pdf"]
+        case .image:   return ["png", "jpg", "jpeg", "heic", "tiff", "gif", "bmp", "webp"]
+        case .video:   return ["mov", "mp4", "m4v", "avi"]
+        case .youtube: return []
         }
     }
 }
@@ -124,12 +128,14 @@ enum PlanAction: Identifiable, Codable {
     case pdfSlides(PDFSlidesAction)
     case video(SingleSourceAction)
     case image(SingleSourceAction)
+    case youtube(SingleSourceAction)
 
     var id: UUID {
         switch self {
         case .pdfSlides(let a): return a.id
         case .video(let a):     return a.id
         case .image(let a):     return a.id
+        case .youtube(let a):   return a.id
         }
     }
 
@@ -138,6 +144,7 @@ enum PlanAction: Identifiable, Codable {
         case .pdfSlides(let a): return a.hotkeys
         case .video(let a):     return a.hotkeys
         case .image(let a):     return a.hotkeys
+        case .youtube(let a):   return a.hotkeys
         }
     }
 
@@ -150,6 +157,8 @@ enum PlanAction: Identifiable, Codable {
             return "Video: \"\(a.sourceAlias)\"\(hotkeySuffix(a.hotkeys))"
         case .image(let a):
             return "Image: \"\(a.sourceAlias)\"\(hotkeySuffix(a.hotkeys))"
+        case .youtube(let a):
+            return "YouTube: \"\(a.sourceAlias)\"\(hotkeySuffix(a.hotkeys))"
         }
     }
 
@@ -158,6 +167,7 @@ enum PlanAction: Identifiable, Codable {
         case .pdfSlides: return "doc.richtext"
         case .video:     return "play.rectangle"
         case .image:     return "photo"
+        case .youtube:   return "play.circle"
         }
     }
 
@@ -169,7 +179,7 @@ enum PlanAction: Identifiable, Codable {
     // MARK: Codable
 
     private enum CodingKeys: String, CodingKey { case type, payload }
-    private enum ActionType: String, Codable { case pdfSlides, video, image }
+    private enum ActionType: String, Codable { case pdfSlides, video, image, youtube }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -177,6 +187,7 @@ enum PlanAction: Identifiable, Codable {
         case .pdfSlides: self = .pdfSlides(try c.decode(PDFSlidesAction.self, forKey: .payload))
         case .video:     self = .video(try c.decode(SingleSourceAction.self, forKey: .payload))
         case .image:     self = .image(try c.decode(SingleSourceAction.self, forKey: .payload))
+        case .youtube:   self = .youtube(try c.decode(SingleSourceAction.self, forKey: .payload))
         }
     }
 
@@ -189,6 +200,8 @@ enum PlanAction: Identifiable, Codable {
             try c.encode(ActionType.video, forKey: .type); try c.encode(a, forKey: .payload)
         case .image(let a):
             try c.encode(ActionType.image, forKey: .type); try c.encode(a, forKey: .payload)
+        case .youtube(let a):
+            try c.encode(ActionType.youtube, forKey: .type); try c.encode(a, forKey: .payload)
         }
     }
 }

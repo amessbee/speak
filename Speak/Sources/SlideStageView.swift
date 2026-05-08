@@ -1,11 +1,11 @@
 import SwiftUI
+import AppKit
 
 struct SlideStageView: View {
     @ObservedObject var vm: PresentationViewModel
     let onBack: () -> Void
 
     @StateObject private var drawing = DrawingViewModel()
-    @FocusState private var isFocused: Bool
     @State private var keyMonitor: Any?
 
     var body: some View {
@@ -29,6 +29,19 @@ struct SlideStageView: View {
                     case .image(let url):
                         ImageSlideView(url: url)
                             .transition(.opacity)
+
+                    case .youtube(let urlStr):
+                        // onKeyDown: JS injected into every frame (incl. cross-origin YouTube
+                        // iframe) intercepts nav keys before the player sees them and sends
+                        // them here via postMessage — the only path that survives WKWebView's
+                        // web-content XPC routing.
+                        YouTubePlayerView(
+                            urlString: urlStr,
+                            restartToken: vm.videoRestartToken,
+                            onKeyDown: { keyCode, meta in handleYouTubeKey(keyCode, meta) },
+                            onFinished: { vm.onVideoFinished() }
+                        )
+                        .transition(.opacity)
                     }
                 }
                 .animation(.easeInOut(duration: 0.25), value: vm.currentIndex)
@@ -62,7 +75,6 @@ struct SlideStageView: View {
 
                     Spacer()
 
-                    // Hotkey hints
                     let hotkeys = vm.currentHotkeys
                     if !hotkeys.isEmpty {
                         HotkeyHintBar(hotkeys: hotkeys)
@@ -91,12 +103,14 @@ struct SlideStageView: View {
             .animation(.spring(response: 0.3, dampingFraction: 0.85), value: drawing.isPenMode)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .focusable()
-        .focused($isFocused)
         .onAppear {
-            isFocused = true
             vm.triggerControlsVisibility()
-            keyMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .mouseMoved, .leftMouseDragged]) { event in
+            // Single monitor handles both keyboard and mouse for all slide types.
+            // For YouTube slides the JS injection is the primary keyboard path; this
+            // monitor serves as a fallback and handles all non-YouTube slides.
+            keyMonitor = NSEvent.addLocalMonitorForEvents(
+                matching: [.keyDown, .mouseMoved, .leftMouseDragged]
+            ) { [drawing, vm] event in
                 switch event.type {
                 case .mouseMoved, .leftMouseDragged:
                     if drawing.isPenMode { NSCursor.crosshair.set() }
@@ -104,14 +118,15 @@ struct SlideStageView: View {
                 case .keyDown:
                     switch event.keyCode {
                     case 123, 126: vm.previous(); return nil
-                    case 124, 125: vm.next(); return nil
-                    case 35: drawing.activatePen(); return nil
-                    case 4:  drawing.activateHighlight(); return nil
+                    case 124, 125: vm.next();     return nil
+                    case 49:       vm.next();     return nil   // space
+                    case 35:       drawing.activatePen();       return nil
+                    case 4:        drawing.activateHighlight(); return nil
                     case 6 where event.modifierFlags.contains(.command):
                         drawing.undo(); return nil
                     default:
-                        // Route character keys to hotkey dispatch
-                        if let ch = event.characters?.first, !event.modifierFlags.contains(.command) {
+                        if let ch = event.characters?.first,
+                           !event.modifierFlags.contains(.command) {
                             vm.fireTriggerKey(ch)
                         }
                         return event
@@ -122,17 +137,23 @@ struct SlideStageView: View {
             }
         }
         .onDisappear {
-            if let monitor = keyMonitor {
-                NSEvent.removeMonitor(monitor)
-                keyMonitor = nil
-            }
+            if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
         }
-        .onTapGesture {
-            isFocused = true
-            vm.triggerControlsVisibility()
+        .onTapGesture { vm.triggerControlsVisibility() }
+    }
+
+    // Called by YouTubePlayerView when its injected JS intercepts a nav key.
+    private func handleYouTubeKey(_ keyCode: Int, _ meta: Bool) {
+        switch keyCode {
+        case 37, 38: vm.previous()
+        case 39, 40: vm.next()
+        case 32:     vm.next()
+        case 27:     NSApp.keyWindow?.toggleFullScreen(nil)
+        case 80:     drawing.activatePen()
+        case 72:     drawing.activateHighlight()
+        case 90 where meta: drawing.undo()
+        default: break
         }
-        .onKeyPress(.space) { vm.next(); return .handled }
-        .onKeyPress(.escape) { NSApp.keyWindow?.toggleFullScreen(nil); return .handled }
     }
 }
 

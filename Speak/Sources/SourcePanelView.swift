@@ -5,6 +5,8 @@ struct SourcePanelView: View {
     @Binding var plan: Plan
     @State private var editingID: UUID?
     @State private var editingAlias: String = ""
+    @State private var showYouTubeSheet = false
+    @State private var youtubeURLInput = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -65,11 +67,19 @@ struct SourcePanelView: View {
                 }
             }
         }
+        .sheet(isPresented: $showYouTubeSheet) {
+            YouTubeURLInputSheet(urlInput: $youtubeURLInput, onAdd: addYouTubeSource)
+        }
     }
 
     // MARK: - Helpers
 
     private func addSource(kind: SourceKind) {
+        if kind == .youtube {
+            youtubeURLInput = ""
+            showYouTubeSheet = true
+            return
+        }
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = true
         panel.canChooseDirectories = false
@@ -83,6 +93,15 @@ struct SourcePanelView: View {
             let src = SourceFile(alias: alias, path: url.path, kind: kind)
             plan.sources.append(src)
         }
+    }
+
+    private func addYouTubeSource() {
+        let trimmed = youtubeURLInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, YouTubePlayerView.extractVideoID(from: trimmed) != nil else { return }
+        let alias = nextAlias(for: .youtube)
+        let src = SourceFile(alias: alias, path: trimmed, kind: .youtube)
+        plan.sources.append(src)
+        showYouTubeSheet = false
     }
 
     private func nextAlias(for kind: SourceKind) -> String {
@@ -140,7 +159,7 @@ struct SourceRow: View {
                     Text(source.alias)
                         .font(.system(size: 13, weight: .medium, design: .monospaced))
                         .foregroundStyle(.white.opacity(0.9))
-                    Text(URL(fileURLWithPath: source.path).lastPathComponent)
+                    Text(pathLabel)
                         .font(.system(size: 10))
                         .foregroundStyle(.white.opacity(0.35))
                         .lineLimit(1)
@@ -175,10 +194,94 @@ struct SourceRow: View {
 
     private func kindColor(_ kind: SourceKind) -> Color {
         switch kind {
-        case .pdf:   return Color(hex: "#8b5cf6")
-        case .image: return Color(hex: "#34d399")
-        case .video: return Color(hex: "#f59e0b")
+        case .pdf:     return Color(hex: "#8b5cf6")
+        case .image:   return Color(hex: "#34d399")
+        case .video:   return Color(hex: "#f59e0b")
+        case .youtube: return Color(hex: "#ef4444")
         }
+    }
+
+    private var pathLabel: String {
+        if source.kind == .youtube { return source.path }
+        return URL(fileURLWithPath: source.path).lastPathComponent
+    }
+}
+
+// MARK: - YouTube URL Input Sheet
+
+struct YouTubeURLInputSheet: View {
+    @Binding var urlInput: String
+    let onAdd: () -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    private var isValid: Bool {
+        YouTubePlayerView.extractVideoID(from: urlInput.trimmingCharacters(in: .whitespacesAndNewlines)) != nil
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Image(systemName: "play.circle")
+                    .foregroundStyle(Color(hex: "#ef4444"))
+                Text("Add YouTube Source")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.white)
+                Spacer()
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 18))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 20)
+            .padding(.bottom, 16)
+
+            Divider().background(Color.white.opacity(0.08))
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text("YOUTUBE URL")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.white.opacity(0.4))
+                    .tracking(1)
+                TextField("https://www.youtube.com/watch?v=...", text: $urlInput)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(
+                        isValid ? Color(hex: "#ef4444").opacity(0.5) : Color.white.opacity(0.1)
+                    ))
+                    .onSubmit { if isValid { onAdd() } }
+
+                if !urlInput.isEmpty && !isValid {
+                    Text("Paste a valid YouTube URL (youtube.com/watch?v=… or youtu.be/…)")
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color(hex: "#f97316"))
+                }
+            }
+            .padding(24)
+
+            Divider().background(Color.white.opacity(0.08))
+
+            HStack {
+                Spacer()
+                Button("Cancel") { dismiss() }
+                    .buttonStyle(WorkspaceToolbarButtonStyle())
+                Button("Add") { onAdd() }
+                    .buttonStyle(WorkspacePresentButtonStyle())
+                    .disabled(!isValid)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+        }
+        .frame(width: 460)
+        .background(Color(hex: "#13131a"))
+        .preferredColorScheme(.dark)
     }
 }
 

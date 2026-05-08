@@ -7,6 +7,7 @@ enum ExecutableItem {
     case pdfPage(PDFPage)
     case video(URL)
     case image(URL)
+    case youtube(String)   // YouTube video URL string
 }
 
 // MARK: - Compiled Hotkeys
@@ -143,15 +144,20 @@ final class PlanExecutor {
         case .image(let a):
             guard let src = sourceMap[a.sourceAlias] else { throw ExecutorError.sourceNotFound(a.sourceAlias) }
             return [.image(URL(fileURLWithPath: src.path))]
+
+        case .youtube(let a):
+            guard let src = sourceMap[a.sourceAlias] else { throw ExecutorError.sourceNotFound(a.sourceAlias) }
+            return [.youtube(src.path)]
         }
     }
 
     private static func expandSource(_ src: SourceFile, docs: inout [PDFDocument]) throws -> [ExecutableItem] {
-        let url = URL(fileURLWithPath: src.path)
         switch src.kind {
-        case .video:  return [.video(url)]
-        case .image:  return [.image(url)]
+        case .youtube: return [.youtube(src.path)]
+        case .video:   return [.video(URL(fileURLWithPath: src.path))]
+        case .image:   return [.image(URL(fileURLWithPath: src.path))]
         case .pdf:
+            let url = URL(fileURLWithPath: src.path)
             guard let doc = PDFDocument(url: url) else {
                 throw ExecutorError.fileUnreadable(src.alias, src.path)
             }

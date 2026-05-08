@@ -122,6 +122,7 @@ struct ActionRow: View {
         case .pdfSlides: return Color(hex: "#8b5cf6")
         case .video:     return Color(hex: "#f59e0b")
         case .image:     return Color(hex: "#34d399")
+        case .youtube:   return Color(hex: "#ef4444")
         }
     }
 }
